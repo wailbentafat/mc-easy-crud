@@ -70,6 +70,12 @@ class PersonalitiesResource(Resource):
     def post(self):
         
         data = request.get_json()
+        required_fields = ['firstname', 'lastname', 'type', 'age']
+        for field in required_fields:
+            if field not in data:
+                response = make_response(json.dumps({"message": f"Missing required field: {field}"}), 400)
+                response.mimetype = 'application/json'
+                return response
         new_personality = Personality(
             firstname=data['firstname'],
             lastname=data['lastname'],
@@ -111,6 +117,13 @@ class PersonalitiesResource(Resource):
             return response
     def put(self, personality_id):
         data = request.get_json()
+        required_fields = ['firstname', 'lastname', 'type', 'age']
+
+        for field in required_fields:
+            if field not in data:
+                response = make_response(json.dumps({"message": f"Missing required field: {field}"}), 400)
+                response.mimetype = 'application/json'
+                return response
         personality = Personality.query.get(personality_id)
         if not personality:
             response = make_response(json.dumps({"message": "Personality not found"}), 404)
